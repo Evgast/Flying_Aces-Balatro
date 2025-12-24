@@ -1,0 +1,11 @@
+{
+	"id": "flace",
+	"name": "Flying Aces",
+	"author": ["Evgast!"],
+	"description": "R1999 obsession lead me here",
+	"prefix": "flace",
+	"main_file": "main.lua",
+	"priority": -30,
+	"badge_colour": "#8d1a91",
+	"version": "0.0.0"
+}
