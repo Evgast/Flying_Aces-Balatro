@@ -44,9 +44,7 @@ FLACE.Flace {
     atlas = "tuning",
     subset = "Trinket",
     pos = { x = 4, y = 0 },
-    loc_vars = function(self, info_queue, card)
-        return { vars = { G.GAME.moxie } }
-    end,
+    config = { extra = { ready = true } },
     use = function (self, card)
         G.consumeables.highlighted[1]:use_consumeable()
     end,
@@ -101,4 +99,5 @@ FLACE.Flace {
             }
         end
     end,
+
 }
