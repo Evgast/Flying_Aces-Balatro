@@ -12,3 +12,24 @@ match_indent = true
 payload = '''
 if G.flace then table.insert(t, G.flace) end
 '''
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = "G.GAME.skip_partner = true"
+position = 'after'
+match_indent = true
+payload = '''
+if not G.GAME.cancel_flace then create_UIBox_your_collection_stolen() end
+'''
+
+[[patches]]
+[patches.pattern]
+target = '=[SMODS partner "partner.lua"]'
+pattern = '''G.FUNCS.select_partner = function()
+    G.FUNCS.exit_overlay_menu()'''
+position = 'after'
+match_indent = true
+payload = '''
+if not G.GAME.cancel_flace then create_UIBox_your_collection_stolen() end
+'''
