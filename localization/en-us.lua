@@ -40,7 +40,8 @@ return {
                 "Once per shop, reroll one selected",
                 "shop {C:attention}Card{}, {C:attention}Booster Pack{} or {C:attention}Voucher{}",
                 "{C:inactive}Card modifiers and set persist",
-                "{C:inactive}Playing cards can't be rerolled"
+                "{C:inactive}Playing cards can't be rerolled",
+                "{C:attention}(#1#){}"
 		            }
                 },
                 ace_flace_blank = {
@@ -48,7 +49,8 @@ return {
 		            text = {
                 "Trigger a selected {C:attention}Consumable{}",
                 "without {C:attention}consuming{} it once",
-                "Charges when {C:attention}entering shop{}"
+                "Charges after beating {C:attention}#2# Blinds{}",
+                "{C:inactive}({C:attention}#1#{}{C:inactive}/#2#){}"
 		            }
                 },
                 ace_flace_diplopia = {
@@ -56,7 +58,8 @@ return {
 		            text = {
                 "Duplicate one selected",
                 "shop {C:attention}Card{} or {C:attention}Booster Pack{}",
-                "Charges when {C:attention}Boss Blind{} is beaten"
+                "Charges when {C:attention}Boss Blind{} is beaten",
+                "{C:attention}(#1#){}"
 		            }
                 }
             }

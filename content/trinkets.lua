@@ -11,7 +11,10 @@ FLACE.Flace {
     atlas = "tuning",
     subset = "Trinket",
     pos = { x = 3, y = 0 },
-    config = { extra = { ready = true } },
+    config = { extra = { ready = true, active = "Active" } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.active } }
+    end,
     use = function (self, card)
         if #G.shop_jokers.highlighted > 0 then
             D6_CARD(G.shop_jokers.highlighted[1])
@@ -32,9 +35,13 @@ FLACE.Flace {
     calculate = function (self, card, context)
         if not card.ability.extra.ready and context.starting_shop then
             card.ability.extra.ready = true
+            card.ability.extra.active = "Active"
             return {
                 message = "Charged up!"
             }
+        end
+        if not card.ability.extra.ready then
+            card.ability.extra.active = "Inactive"
         end
     end,
 }
@@ -44,19 +51,28 @@ FLACE.Flace {
     atlas = "tuning",
     subset = "Trinket",
     pos = { x = 4, y = 0 },
-    config = { extra = { ready = true } },
+    config = { extra = { charge = 2, require = 2, funky = false } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.charge, card.ability.extra.require } }
+    end,
     use = function (self, card)
         G.consumeables.highlighted[1]:use_consumeable()
-        card.ability.extra.ready = false
+        card.ability.extra.charge = 0
     end,
     can_use = function (self, card)
-        if #G.consumeables.highlighted == 1 and G.consumeables.highlighted[1]:can_use_consumeable() and card.ability.extra.ready then
+        if #G.consumeables.highlighted == 1 and G.consumeables.highlighted[1]:can_use_consumeable() and card.ability.extra.charge >= card.ability.extra.require then
             return true
         end
     end,
     calculate = function (self, card, context)
-        if not card.ability.extra.ready and context.starting_shop then
-            card.ability.extra.ready = true
+        if card.ability.extra.charge < card.ability.extra.require then
+            card.ability.extra.funky = false
+        end
+        if context.end_of_round and context.game_over == false and context.main_eval and card.ability.extra.charge < card.ability.extra.require then
+            card.ability.extra.charge = card.ability.extra.charge + 1
+        end
+        if card.ability.extra.charge >= card.ability.extra.require and not card.ability.extra.funky then
+            card.ability.extra.funky = true
             return {
                 message = "Charged up!"
             }
@@ -77,7 +93,10 @@ FLACE.Flace {
     atlas = "tuning",
     subset = "Trinket",
     pos = { x = 5, y = 0 },
-    config = { extra = { ready = true } },
+    config = { extra = { ready = true, active = "Active" } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.active } }
+    end,
     use = function (self, card)
         if #G.shop_jokers.highlighted > 0 then
             Diplopia(G.shop_jokers.highlighted[1])
@@ -95,12 +114,13 @@ FLACE.Flace {
     calculate = function (self, card, context)
         if context.end_of_round and context.game_over == false and context.main_eval and context.beat_boss and not card.ability.extra.ready then
             card.ability.extra.ready = true
+            card.ability.extra.active = "Active"
             return {
                 message = "Charged up!"
             }
         end
+        if not card.ability.extra.ready then
+            card.ability.extra.active = "Inactive"
+        end
     end,
-
 }
-
-
