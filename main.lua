@@ -6,6 +6,18 @@ SMODS.current_mod.optional_features = function()
     }
 end
 
+SMODS.current_mod.custom_card_areas = function(G)
+	G.flace = CardArea(
+		G.consumeables.T.x + 3, G.hand.T.y - 3, G.consumeables.T.w / 2.2, G.consumeables.T.h,
+        {
+            card_limit = 1, 
+            type = 'joker', 
+            highlight_limit = 1, 
+            no_card_count = true 
+        }
+	)
+end
+
 FLACE = {}
 
 FLACE.Flace = SMODS.Center:extend {
@@ -148,15 +160,7 @@ end
 
 function G.FUNCS.select_flace()
     G.FUNCS.exit_overlay_menu()
-    G.flace = CardArea(
-		G.consumeables.T.x + 3, G.hand.T.y - 3, G.consumeables.T.w / 2.2, G.consumeables.T.h,
-        {
-            card_limit = 1, 
-            type = 'joker', 
-            highlight_limit = 1, 
-            no_card_count = true 
-        }
-	)
+
     SMODS.add_card { area = G.flace, key = G.selected_card.key }
 end
 
@@ -166,6 +170,7 @@ end
 
 function G.FUNCS.cancel_flace_choice()
     G.FUNCS.exit_overlay_menu()
+    G.GAME.cancel_flace = true
 end
 
 --Tuning buttons:
@@ -228,8 +233,13 @@ end
 local start_run_ref = Game.start_run
 function Game:start_run(args)
     start_run_ref(self, args)
-    if not G.flace then
+    if G.flace and #G.flace.cards == 0 and not G.GAME.cancel_flace and not next(SMODS.find_mod("partner")) then
         create_UIBox_your_collection_stolen()
+    end
+    if next(SMODS.find_mod("partner")) then
+        if not Partner_API.config.enable_partner then
+            create_UIBox_your_collection_stolen()
+        end
     end
 end
 
