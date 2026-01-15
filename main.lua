@@ -6,18 +6,6 @@ SMODS.current_mod.optional_features = function()
     }
 end
 
-SMODS.current_mod.custom_card_areas = function(G)
-	G.flace = CardArea(
-		G.consumeables.T.x + 3, G.hand.T.y - 3, G.consumeables.T.w / 2.2, G.consumeables.T.h,
-        {
-            card_limit = 1, 
-            type = 'joker', 
-            highlight_limit = 1, 
-            no_card_count = true 
-        }
-	)
-end
-
 FLACE = {}
 
 FLACE.Flace = SMODS.Center:extend {
@@ -160,6 +148,15 @@ end
 
 function G.FUNCS.select_flace()
     G.FUNCS.exit_overlay_menu()
+    G.flace = CardArea(
+		G.consumeables.T.x + 3, G.hand.T.y - 3, G.consumeables.T.w / 2.2, G.consumeables.T.h,
+        {
+            card_limit = 1, 
+            type = 'joker', 
+            highlight_limit = 1, 
+            no_card_count = true 
+        }
+	)
     SMODS.add_card { area = G.flace, key = G.selected_card.key }
 end
 
@@ -173,8 +170,8 @@ end
 
 --Tuning buttons:
 function G.FUNCS.blueskill(e) -- Blue buton's func...
-    local card = G.flace.cards[1]
-    if G.flace.cards[1].config.center:can_use_blue(card) then
+    local card = e.config.ref_table
+    if card.config.center:can_use_blue(card) then
         e.config.button = "bluebutton"
         e.config.colour = G.C.CHIPS
     else
@@ -183,15 +180,15 @@ function G.FUNCS.blueskill(e) -- Blue buton's func...
     end
 end
 
-G.FUNCS.bluebutton = function () -- Blue button's effect
-    local card = G.flace.cards[1]
-    G.flace.cards[1].config.center:use_blue(card)
-    G.flace.cards[1]:highlight(false)
+G.FUNCS.bluebutton = function (e) -- Blue button's effect
+    local card = e.config.ref_table
+    card.config.center:use_blue(card)
+    card:highlight(false)
 end
 
 function G.FUNCS.redskill(e) -- redbutt func
-    local card = G.flace.cards[1]
-    if G.flace.cards[1].config.center:can_use_red(card) then
+    local card = e.config.ref_table
+    if card.config.center:can_use_red(card) then
         e.config.button = "redbutton"
         e.config.colour = G.C.MULT
     else
@@ -200,16 +197,16 @@ function G.FUNCS.redskill(e) -- redbutt func
     end
 end
 
-function G.FUNCS.redbutton() -- redbutt effect
-    local card = G.flace.cards[1]
-    G.flace.cards[1].config.center:use_red(card)
-    G.flace.cards[1]:highlight(false)
+function G.FUNCS.redbutton(e) -- redbutt effect
+    local card = e.config.ref_table
+    card.config.center:use_red(card)
+    card:highlight(false)
 end
 
 --Here come the trinkets!!
 function G.FUNCS.trinketskill(e)
-    local card = G.flace.cards[1]
-    if G.flace.cards[1].config.center:can_use(card) then
+    local card = e.config.ref_table
+    if card.config.center:can_use(card) then
         e.config.button = "trinketbutt"
         e.config.colour = G.C.GREEN
     else
@@ -218,10 +215,10 @@ function G.FUNCS.trinketskill(e)
     end
 end
 
-function G.FUNCS.trinketbutt()
-    local card = G.flace.cards[1]
-    G.flace.cards[1].config.center:use(card)
-    G.flace.cards[1]:highlight(false)
+function G.FUNCS.trinketbutt(e)
+    local card = e.config.ref_table
+    card.config.center:use(card)
+    card:highlight(false)
 end
 
 function G.FUNCS.recalc(e)
@@ -231,7 +228,9 @@ end
 local start_run_ref = Game.start_run
 function Game:start_run(args)
     start_run_ref(self, args)
-    create_UIBox_your_collection_stolen()
+    if not G.flace then
+        create_UIBox_your_collection_stolen()
+    end
 end
 
 local highlight_hooky = Card.highlight
@@ -239,12 +238,12 @@ function Card:highlight(is_highlighted)
     highlight_hooky(self, is_highlighted)
     local tuning_ui = {n = G.UIT.ROOT, config = { minw = 1, minh = 1, align = "tm", colour = G.C.CLEAR}, nodes = {
 	            {n = G.UIT.C, config = { minw = 1, minh = 1, colour = G.C.CLEAR, r = 0.1, padding = 0.15, func = "recalc" }, nodes = {
-                    UIBox_button{ label = {"USE  "}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, func = "blueskill", shadow = true},
-                    UIBox_button{ label = {"USE  "}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, func = "redskill", shadow = true},
+                    UIBox_button{ label = {"USE  "}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, ref_table = self, func = "blueskill", shadow = true},
+                    UIBox_button{ label = {"USE  "}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, ref_table = self, func = "redskill", shadow = true},
             }}}}
     local trinket_ui = {n = G.UIT.ROOT, config = { minw = 1, minh = 1, align = "tm", colour = G.C.CLEAR}, nodes = {
 	            {n = G.UIT.C, config = { minw = 1, minh = 1, colour = G.C.CLEAR, r = 0.1, padding = 0.15, func = "recalc" }, nodes = {
-                    UIBox_button{ label = {"USE  "}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, func = "trinketskill", shadow = true},
+                    UIBox_button{ label = {"USE  "}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, ref_table = self, func = "trinketskill", shadow = true},
             }}}}
     local select_card_ut = {n = G.UIT.ROOT, config = { minw = 1, minh = 1, align = "tm", colour = G.C.CLEAR}, nodes = {
 	            {n = G.UIT.C, config = { minw = 1, minh = 1, colour = G.C.CLEAR, r = 0.1, padding = 0.15, func = "recalc" }, nodes = {
