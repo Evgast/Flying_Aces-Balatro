@@ -52,7 +52,7 @@ FLACE.Flace {
     sub_badge_label = "Slop!",
     sub_badge_color = G.C.PURPLE,
     pos = { x = 1, y = 0 },
-    config = { extra = { type = "Flace", key = "ace_flace_evg", ready = true,
+    config = { extra = { type = "Flace", key = nil, ready = true,
     akyr_hands = 0, akyr_hands_give = 10,
     ace_it = false } },
     loc_vars = function(self, info_queue, card)
@@ -122,10 +122,12 @@ FLACE.Flace {
     update = function(self, card, dt)
         for k, v in pairs(G.evgast_type) do
             if v.modname == card.ability.extra.type then
+                if v.loc_key ~= card.ability.extra.key then
                 self.pos.x = v.x
                 self.pos.y = v.y
                 self.redbutt = v.redbutt
                 card.ability.extra.key = v.loc_key
+                end
             end
         end
     end,
