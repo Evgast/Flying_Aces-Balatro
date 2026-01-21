@@ -8,7 +8,7 @@ end
 
 SMODS.current_mod.custom_card_areas = function(G)
 	G.flace = CardArea(
-		G.consumeables.T.x + 3, G.hand.T.y - 3, G.consumeables.T.w / 2.2, G.consumeables.T.h,
+		G.consumeables.T.x + 2.5, G.hand.T.y - 3, G.consumeables.T.w / 2.2, G.consumeables.T.h,
         {
             card_limit = 1, 
             type = 'joker', 
@@ -28,7 +28,12 @@ FLACE.Flace = SMODS.Center:extend {
         config = {},
         class_prefix = 'ace',
         set = 'Flace',
-        subset = "Tuning",
+        set_badge_label = localize("flace"),
+        set_badge_color = G.C.MULT,
+        subset = "Knock-Off",
+        bluebutt = G.C.CHIPS,
+        redbutt = G.C.MULT,
+        trinketbutt = G.C.GREEN,
         required_params = {
             'key',
         },
@@ -39,8 +44,38 @@ FLACE.Flace = SMODS.Center:extend {
             SMODS.Center.inject(self)
         end,
         set_card_type_badge = function(self, card, badges)
-            badges[#badges + 1] = create_badge("Flying Ace", G.C.MULT, G.C.WHITE, 1.2)
-            badges[#badges + 1] = create_badge(card.config.center.subset, G.C.GREEN, G.C.WHITE, 1.2)
+            local subset = self.sub_badge_label
+            local color = self.sub_badge_color
+            if self.subset == "Tuning" then
+                if not self.sub_badge_label then
+                    subset = localize("flace_tuning")
+                end
+                if not self.sub_badge_color then
+                    color = G.C.CHIPS
+                end
+            elseif self.subset == "Trinket" then
+                if not self.sub_badge_label then
+                    subset = localize("flace_trinket")
+                end
+                if not self.sub_badge_color then
+                    color = G.C.GREEN
+                end
+            elseif self.subset == "Knock-Off" then
+                if not self.sub_badge_label then
+                    subset = localize("flace_knock")
+                end
+                if not self.sub_badge_color then
+                    color = G.C.UI.TEXT_INACTIVE
+                end
+            end
+            if not subset then
+                subset = self.subset
+            end
+            if not color then
+                color = G.C.UI.TEXT_INACTIVE
+            end
+            badges[#badges + 1] = create_badge(self.set_badge_label, self.set_badge_color, G.C.WHITE, 1.2)
+            badges[#badges + 1] = create_badge(subset, color, G.C.WHITE, 1.2)
         end,
         generate_ui = function(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
             SMODS.Center.generate_ui(self, info_queue, card, desc_nodes, specific_vars, full_UI_table)
@@ -49,10 +84,18 @@ FLACE.Flace = SMODS.Center:extend {
     
 SMODS.load_file("content/tuning.lua")()
 SMODS.load_file("content/trinkets.lua")()
+SMODS.load_file("content/evgast.lua")()
 
 SMODS.Atlas {
 	key = "tuning",
 	path = "tuning.png",
+	px = 71,
+	py = 95
+}
+
+SMODS.Atlas {
+	key = "evgast",
+	path = "evgast.png",
 	px = 71,
 	py = 95
 }
@@ -129,9 +172,9 @@ function create_UIBox_your_collection_stolen()
             { n = G.UIT.C, config = {minw=1, minh=1, colour = G.C.CLEAR, padding = 0.2 }, nodes = {
                 { n = G.UIT.R, config = {r = 0.1, minw = 1, minh = 1, align = "cm", colour = G.C.BLACK }, nodes = {
                     { n=G.UIT.O, config = { align = "cm", object = G.selected_area, id = G.selected_card.key, func = "tune_card_check" }}}},
-                UIBox_button{ label = {"SELECT"}, scale = 0.5, minw = 2, minh = 1, colour = G.C.GREEN, r = 0.1, button = "select_flace" },
-                UIBox_button{ label = {"RANDOM"}, scale = 0.5, minw = 2, minh = 1, colour = G.C.PURPLE, r = 0.1, button = "random_flace" },
-                UIBox_button{ label = {"CANCEL"}, scale = 0.5, minw = 2, minh = 1, colour = G.C.MULT, r = 0.1, button = "cancel_flace_choice" }}
+                UIBox_button{ label = {localize("flace_select")}, scale = 0.5, minw = 2, minh = 1, colour = G.C.GREEN, r = 0.1, button = "select_flace" },
+                UIBox_button{ label = {localize("flace_random")}, scale = 0.5, minw = 2, minh = 1, colour = G.C.PURPLE, r = 0.1, button = "random_flace" },
+                UIBox_button{ label = {localize("flace_cancel")}, scale = 0.5, minw = 2, minh = 1, colour = G.C.MULT, r = 0.1, button = "cancel_flace_choice" }}
     }}}}}
 G.FUNCS.overlay_menu({
     definition = t
@@ -178,7 +221,7 @@ function G.FUNCS.blueskill(e) -- Blue buton's func...
     local card = e.config.ref_table
     if card.config.center:can_use_blue(card) then
         e.config.button = "bluebutton"
-        e.config.colour = G.C.CHIPS
+        e.config.colour = card.config.center.bluebutt
     else
         e.config.button = nil
         e.config.colour = G.C.BLACK
@@ -195,7 +238,7 @@ function G.FUNCS.redskill(e) -- redbutt func
     local card = e.config.ref_table
     if card.config.center:can_use_red(card) then
         e.config.button = "redbutton"
-        e.config.colour = G.C.MULT
+        e.config.colour = card.config.center.redbutt
     else
         e.config.button = nil
         e.config.colour = G.C.BLACK
@@ -213,7 +256,7 @@ function G.FUNCS.trinketskill(e)
     local card = e.config.ref_table
     if card.config.center:can_use(card) then
         e.config.button = "trinketbutt"
-        e.config.colour = G.C.GREEN
+        e.config.colour = card.config.center.trinketbutt
     else
         e.config.button = nil
         e.config.colour = G.C.BLACK
@@ -237,7 +280,7 @@ function Game:start_run(args)
         create_UIBox_your_collection_stolen()
     end
     if next(SMODS.find_mod("partner")) then
-        if not Partner_API.config.enable_partner then
+        if G.flace and #G.flace.cards == 0 and not G.GAME.cancel_flace and not Partner_API.config.enable_partner then
             create_UIBox_your_collection_stolen()
         end
     end
@@ -248,22 +291,22 @@ function Card:highlight(is_highlighted)
     highlight_hooky(self, is_highlighted)
     local tuning_ui = {n = G.UIT.ROOT, config = { minw = 1, minh = 1, align = "tm", colour = G.C.CLEAR}, nodes = {
 	            {n = G.UIT.C, config = { minw = 1, minh = 1, colour = G.C.CLEAR, r = 0.1, padding = 0.15, func = "recalc" }, nodes = {
-                    UIBox_button{ label = {"USE  "}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, ref_table = self, func = "blueskill", shadow = true},
-                    UIBox_button{ label = {"USE  "}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, ref_table = self, func = "redskill", shadow = true},
+                    UIBox_button{ label = {localize("flace_use")}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, ref_table = self, func = "blueskill", shadow = true},
+                    UIBox_button{ label = {localize("flace_use")}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, ref_table = self, func = "redskill", shadow = true},
             }}}}
     local trinket_ui = {n = G.UIT.ROOT, config = { minw = 1, minh = 1, align = "tm", colour = G.C.CLEAR}, nodes = {
 	            {n = G.UIT.C, config = { minw = 1, minh = 1, colour = G.C.CLEAR, r = 0.1, padding = 0.15, func = "recalc" }, nodes = {
-                    UIBox_button{ label = {"USE  "}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, ref_table = self, func = "trinketskill", shadow = true},
+                    UIBox_button{ label = {localize("flace_use")}, scale = 0.6, minw = 1.5, minh = 1, colour = G.C.BLACK, r = 0.1, button = nil, ref_table = self, func = "trinketskill", shadow = true},
             }}}}
     local select_card_ut = {n = G.UIT.ROOT, config = { minw = 1, minh = 1, align = "tm", colour = G.C.CLEAR}, nodes = {
 	            {n = G.UIT.C, config = { minw = 1, minh = 1, colour = G.C.CLEAR, r = 0.1, padding = 0.15, func = "recalc" }, nodes = {
                     {n = G.UIT.R, config = { minw = 1, minh = 0.8, align = "cm", padding = 0.1, colour = G.C.GREEN, r = 0.1, button = "ut_draw", shadow = true}, nodes = { 
-                        { n = G.UIT.T, config = { text = "SELECT", colour = G.C.WHITE, scale = 0.5, shadow = true }}}},
+                        { n = G.UIT.T, config = { text = localize("flace_select"), colour = G.C.WHITE, scale = 0.5, shadow = true }}}},
             }}}}
     local select_card_go = {n = G.UIT.ROOT, config = { minw = 1, minh = 1, align = "tm", colour = G.C.CLEAR}, nodes = {
 	            {n = G.UIT.C, config = { minw = 1, minh = 1, colour = G.C.CLEAR, r = 0.1, padding = 0.15, func = "recalc" }, nodes = {
                     {n = G.UIT.R, config = { minw = 1, minh = 0.8, align = "cm", padding = 0.1, colour = G.C.GREEN, r = 0.1, button = "go_draw", shadow = true}, nodes = { 
-                        { n = G.UIT.T, config = { text = "SELECT", colour = G.C.WHITE, scale = 0.5, shadow = true }}}},
+                        { n = G.UIT.T, config = { text = localize("flace_select"), colour = G.C.WHITE, scale = 0.5, shadow = true }}}},
             }}}}
         if self.highlighted and self.config.center.subset == "Tuning" then
             self.children.use_button = UIBox({    

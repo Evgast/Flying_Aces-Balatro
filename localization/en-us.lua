@@ -10,7 +10,6 @@ return {
                 "up-ranks a selected playing card",
                 "{C:mult}Red button{} takes {C:attention}#4#{} Moxie, draws your hand",
                 "back in the Deck, draws a new Hand",
-                "{C:spades}Marcus{} {C:diamonds}is{} {C:clubs}my{} {C:hearts}daughter{}"
 		            }
                 },
                 ace_flace_go = {
@@ -61,7 +60,107 @@ return {
                 "Charges when {C:attention}Boss Blind{} is beaten",
                 "{C:attention}(#1#){}"
 		            }
+                },
+                --self-insert flace bullshittery starts here
+                ace_flace_evg = {
+                    name = "Evgast",
+		            text = {
+                {
+                "Press {C:purple}purple button{} to select",
+                "an ability for the {C:attention}lower button{}",
+                },
+                {
+                "{C:money}Yellow button{} plays",
+                "a {X:green,C:white}funny{} sound"
+                },
+                {
+                "{C:attention}Lower button{} can be used once",
+                "Recharges when {C:attention}beating the ante{}",
+                "All abilities come",
+                "from {C:attention}other mods!{}",
+                "Available: {C:attention}#2#{}",
+                "Current: {C:attention}#1#{}"
                 }
+		            }
+                },
+                ace_flace_evg_akyrs = {
+                    name = "Evgast",
+		            text = {
+                {
+                "Press {C:purple}purple button{} to select",
+                "an ability for the {C:attention}lower button{}",
+                },
+                {
+                "After pressing {C:green}green button{}",
+                "all cards in next {C:attention}#4#{}{C:inactive}(#3#){} hands",
+                "are retriggered"
+                },
+                {
+                "{C:attention}Lower button{} can be used once",
+                "Recharges when {C:attention}beating the ante{}",
+                "All abilities come",
+                "from {C:attention}other mods!{}",
+                "Available: {C:attention}#2#{}",
+                "Current: {C:attention}#1#{}"
+                }
+		            }
+                },
+                ace_flace_evg_partner = {
+                    name = "Evgast",
+		            text = {
+                {
+                "Press {C:purple}purple button{} to select",
+                "an ability for the {C:attention}lower button{}",
+                },
+                {
+                "{C:mult}Red button{} removes current {C:attention}Partner{}",
+                "and lets you select a new one"
+                },
+                {
+                "{C:attention}Lower button{} can be used once",
+                "Recharges when {C:attention}beating the ante{}",
+                "All abilities come",
+                "from {C:attention}other mods!{}",
+                "Available: {C:attention}#2#{}",
+                "Current: {C:attention}#1#{}"
+                }
+		            }
+                },
+                ace_flace_evg_revo = {
+                    name = "Evgast",
+		            text = {
+                {
+                "Press {C:purple}purple button{} to select",
+                "an ability for the {C:attention}lower button{}",
+                },
+                {
+                "{C:spades}Spade-colored button{} turns all",
+                "{C:attention}scored cards{} in your next hand",
+                "into {C:attention}Aces{}"
+                },
+                {
+                "{C:attention}Lower button{} can be used once",
+                "Recharges when {C:attention}beating the ante{}",
+                "All abilities come",
+                "from {C:attention}other mods!{}",
+                "Available: {C:attention}#2#{}",
+                "Current: {C:attention}#1#{}"
+                }
+		            }
+                },
             }
+    },
+    misc = {
+        dictionary = {
+            flace_cancel = "CANCEL",
+            flace_select = "SELECT",
+            flace_random = "RANDOM",
+            flace_use = "USE  ",
+            flace_select_alt = "Select",
+            flace = "Flying Ace",
+            flace_tuning = "Tuning",
+            flace_trinket = "Trinket",
+            flace_knock = "Knock-Off"
+        },
     }
 }

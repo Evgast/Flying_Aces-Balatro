@@ -20,7 +20,7 @@ pattern = "G.GAME.skip_partner = true"
 position = 'after'
 match_indent = true
 payload = '''
-if not G.GAME.cancel_flace then create_UIBox_your_collection_stolen() end
+if not G.flace and #G.flace.cards == 0 and not G.GAME.cancel_flace then create_UIBox_your_collection_stolen() end
 '''
 
 [[patches]]
@@ -31,5 +31,5 @@ pattern = '''G.FUNCS.select_partner = function()
 position = 'after'
 match_indent = true
 payload = '''
-if not G.GAME.cancel_flace then create_UIBox_your_collection_stolen() end
+if not G.flace and #G.flace.cards == 0 and not G.GAME.cancel_flace then create_UIBox_your_collection_stolen() end
 '''

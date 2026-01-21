@@ -1,7 +1,7 @@
     FLACE.Flace {
         key = "fm",
         atlas = "tuning",
-        subset = "Tuning", --Actually isn't needed since the Tuning subset is the default one
+        subset = "Tuning",
         pos = { x = 0, y = 0 },
         config = { extra = { moxie = 100, moxie_gain = 20, moxie_blue = 40, moxie_red = 25, moxie_max = 100 } },
         loc_vars = function(self, info_queue, card)
@@ -41,6 +41,7 @@
     FLACE.Flace {
         key = "go",
         atlas = "tuning",
+        subset = "Tuning",
         pos = { x = 2, y = 0 },
         config = { extra = { moxie = 100, moxie_gain = 20, moxie_blue = 40, moxie_red = 40, moxie_max = 100 } },
 	    loc_vars = function(self, info_queue, card)
